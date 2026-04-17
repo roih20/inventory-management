@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "productName": "Laptop",
+    "availableStock": 10,
+    "stockLevel": "Medium",
+    "location": "Warehouse A",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 2,
+    "productName": "Mouse",
+    "availableStock": 50,
+    "stockLevel": "High",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 3,
+    "productName": "Keyboard",
+    "availableStock": 10,
+    "stockLevel": "Low",
+    "location": "Warehouse A",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 4,
+    "productName": "Monitor",
+    "availableStock": 20,
+    "stockLevel": "Medium",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 5,
+    "productName": "Printer",
+    "availableStock": 5,
+    "stockLevel": "Low",
+    "location": "Warehouse A",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 6,
+    "productName": "Desk Chair",
+    "availableStock": 15,
+    "stockLevel": "Medium",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 7,
+    "productName": "Desk Chair",
+    "availableStock": 15,
+    "stockLevel": "Medium",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 8,
+    "productName": "Desk Chair",
+    "availableStock": 15,
+    "stockLevel": "Medium",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  },
+  {
+    "id": 9,
+    "productName": "Desk Chair",
+    "availableStock": 15,
+    "stockLevel": "Medium",
+    "location": "Warehouse B",
+    "lastUpdated": "2026-04-09"
+  }
+]

@@ -16,7 +16,11 @@
     "module": "preserve",
     "paths": {
       "@components/*": ["./src/app/components/*"],
-      "@features/*": ["./src/app/features/*"]
+      "@features/*": ["./src/app/features/*"],
+      "@pages/*": ["./src/app/pages/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@interfaces/*": ["./src/app/interfaces/*"],
+      "@services/*": ["./src/app/services/*"]
     }
   },
   "angularCompilerOptions": {

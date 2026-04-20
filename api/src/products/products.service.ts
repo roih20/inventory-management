@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +30,7 @@ export class ProductsService {
     await this.productsService.save(product);
 
     return {
-      status: 201,
+      status: HttpStatus.CREATED,
       message: 'Product created successfully',
     };
   }
@@ -47,8 +47,20 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<{ status: number; message: string }> {
+    const result = await this.productsService.update(id, updateProductDto);
+
+    if (!result.affected) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+
+    return {
+      status: HttpStatus.OK,
+      message: 'Product updated successfully',
+    };
   }
 
   async remove(id: number): Promise<void> {

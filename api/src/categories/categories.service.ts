@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Repository } from 'typeorm';
@@ -17,7 +17,7 @@ export class CategoriesService {
   ): Promise<{ status: number; message: string }> {
     await this.categoryRepository.save(createCategoryDto);
     return {
-      status: 201,
+      status: HttpStatus.CREATED,
       message: 'Category created successfully',
     };
   }
@@ -37,14 +37,21 @@ export class CategoriesService {
     id: number,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<{ status: number; message: string }> {
-    await this.categoryRepository.update(id, updateCategoryDto);
+    const result = await this.categoryRepository.update(id, updateCategoryDto);
+    if (!result.affected) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
     return {
-      status: 200,
+      status: HttpStatus.OK,
       message: 'Category updated successfully',
     };
   }
 
   async remove(id: number): Promise<void> {
-    await this.categoryRepository.delete(id);
+    const result = await this.categoryRepository.delete(id);
+
+    if (!result.affected) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
   }
 }

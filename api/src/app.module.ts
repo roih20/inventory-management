@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { EmployeeModule } from './employee/employee.module';
 import { APP_GUARD } from '@nestjs/core';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     AuthModule,
     EmployeeModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],

@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
+import { Inventory } from 'src/inventory/entities/inventory.entity';
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
@@ -24,4 +31,7 @@ export class Product {
     eager: true,
   })
   category: Category;
+
+  @OneToMany(() => Inventory, (inventory) => inventory.product)
+  inventory: Inventory[];
 }

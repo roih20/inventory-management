@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Inventory } from 'src/inventory/entities/inventory.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('stores')
 export class Store {
@@ -16,4 +17,7 @@ export class Store {
 
   @Column({ length: 10 })
   zipCode: string;
+
+  @OneToMany(() => Inventory, (inventory) => inventory.location)
+  inventory: Inventory[];
 }

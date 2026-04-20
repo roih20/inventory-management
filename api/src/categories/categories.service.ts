@@ -38,7 +38,7 @@ export class CategoriesService {
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<{ status: number; message: string }> {
     const result = await this.categoryRepository.update(id, updateCategoryDto);
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
     return {
@@ -50,7 +50,7 @@ export class CategoriesService {
   async remove(id: number): Promise<void> {
     const result = await this.categoryRepository.delete(id);
 
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
   }

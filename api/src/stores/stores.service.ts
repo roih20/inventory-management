@@ -39,7 +39,7 @@ export class StoresService {
     updateStoreDto: UpdateStoreDto,
   ): Promise<{ status: number; message: string }> {
     const result = await this.storesRepository.update(id, updateStoreDto);
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Store with id ${id} not found`);
     }
     return {
@@ -50,7 +50,7 @@ export class StoresService {
 
   async remove(id: number): Promise<void> {
     const result = await this.storesRepository.delete(id);
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Store with id ${id} not found`);
     }
   }

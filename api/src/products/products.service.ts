@@ -53,7 +53,7 @@ export class ProductsService {
   ): Promise<{ status: number; message: string }> {
     const result = await this.productsService.update(id, updateProductDto);
 
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
 
@@ -66,7 +66,7 @@ export class ProductsService {
   async remove(id: number): Promise<void> {
     const result = await this.productsService.delete(id);
 
-    if (!result.affected) {
+    if (result.affected === 0) {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
   }

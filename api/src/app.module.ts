@@ -9,6 +9,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { APP_GUARD } from '@nestjs/core';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { StoresModule } from './stores/stores.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ProductsModule } from './products/products.module';
     EmployeeModule,
     CategoriesModule,
     ProductsModule,
+    StoresModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],

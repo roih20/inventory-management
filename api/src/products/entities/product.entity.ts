@@ -1,4 +1,5 @@
 import {
+  Check,
   Column,
   Entity,
   ManyToOne,
@@ -8,6 +9,7 @@ import {
 import { Category } from '../../categories/entities/category.entity';
 import { Inventory } from 'src/inventory/entities/inventory.entity';
 @Entity('products')
+@Check(`"price" >= 0`)
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;

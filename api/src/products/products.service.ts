@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Category } from 'src/categories/entities/category.entity';
+import { SortOptions } from 'src/enums/sortOptions.enum';
+import { OrderOptions } from 'src/enums/orderOptions.enum';
 @Injectable()
 export class ProductsService {
   constructor(
@@ -35,8 +37,19 @@ export class ProductsService {
     };
   }
 
-  findAll(): Promise<Product[]> {
-    return this.productsService.find();
+  findAll(
+    categoryId?: number,
+    sort?: SortOptions,
+    order?: OrderOptions,
+  ): Promise<Product[]> {
+    return this.productsService.find({
+      where: { category: { id: categoryId } },
+      order: sort
+        ? {
+            [sort]: order,
+          }
+        : undefined,
+    });
   }
 
   async findOne(id: number): Promise<Product> {

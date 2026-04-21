@@ -28,7 +28,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  ingredients: string[];
+  ingredients?: string[];
   @IsInt()
   @IsPositive()
   categoryId: number;

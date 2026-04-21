@@ -45,7 +45,7 @@ export class InventoryService {
   findAll(
     status?: InventoryStatus,
     sort?: SortOptions,
-    order: 'ASC' | 'DESC' = 'ASC',
+    order?: string,
   ): Promise<Inventory[]> {
     return this.inventoryRepository.find({
       where: {

@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from 'src/stores/entities/store.entity';
 import { Product } from 'src/products/entities/product.entity';
+import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
+import { SortOptions } from 'src/enums/sortOptions.enum';
 
 @Injectable()
 export class InventoryService {
@@ -40,8 +42,21 @@ export class InventoryService {
     return { status: HttpStatus.OK, message: 'Inventory created successfully' };
   }
 
-  findAll(): Promise<Inventory[]> {
-    return this.inventoryRepository.find();
+  findAll(
+    status?: InventoryStatus,
+    sort?: SortOptions,
+    order: 'ASC' | 'DESC' = 'ASC',
+  ): Promise<Inventory[]> {
+    return this.inventoryRepository.find({
+      where: {
+        status,
+      },
+      order: sort
+        ? {
+            [sort]: order,
+          }
+        : undefined,
+    });
   }
 
   async findOne(id: number): Promise<Inventory> {

@@ -11,14 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum Status {
-  OUT_OF_STOCK = 'OUT_OF_STOCK',
-  LOW_STOCK = 'LOW',
-  MEDIUM_STOCK = 'MEDIUM',
-  HIGH_STOCK = 'HIGH',
-}
-
+import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
 @Entity()
 @Check(`"quantity" >= 0`)
 export class Inventory {
@@ -30,10 +23,10 @@ export class Inventory {
 
   @Column({
     type: 'enum',
-    enum: Status,
-    default: Status.OUT_OF_STOCK,
+    enum: InventoryStatus,
+    default: InventoryStatus.OUT_OF_STOCK,
   })
-  status: Status;
+  status: InventoryStatus;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -55,13 +48,13 @@ export class Inventory {
   @BeforeUpdate()
   updateStatus() {
     if (this.quantity === 0) {
-      this.status = Status.OUT_OF_STOCK;
+      this.status = InventoryStatus.OUT_OF_STOCK;
     } else if (this.quantity > 0 && this.quantity <= 15) {
-      this.status = Status.LOW_STOCK;
+      this.status = InventoryStatus.LOW_STOCK;
     } else if (this.quantity > 15 && this.quantity <= 50) {
-      this.status = Status.MEDIUM_STOCK;
+      this.status = InventoryStatus.MEDIUM_STOCK;
     } else {
-      this.status = Status.HIGH_STOCK;
+      this.status = InventoryStatus.HIGH_STOCK;
     }
   }
 }

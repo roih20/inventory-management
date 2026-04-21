@@ -34,7 +34,7 @@ import { InventoryModule } from './inventory/inventory.module';
       throttlers: [
         {
           name: 'default',
-          ttl: 60000,
+          ttl: 6000,
           limit: 10,
         },
         {

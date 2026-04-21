@@ -55,13 +55,9 @@ export class InventoryService {
     id: number,
     updateInventoryDto: UpdateInventoryDto,
   ): Promise<{ status: number; message: string }> {
-    const result = await this.inventoryRepository.update(
-      id,
-      updateInventoryDto,
-    );
-    if (result.affected === 0) {
-      throw new NotFoundException(`Inventory with ID ${id} not found`);
-    }
+    const inventory = await this.findOne(id);
+    Object.assign(inventory, updateInventoryDto);
+    await this.inventoryRepository.save(inventory);
     return { status: HttpStatus.OK, message: 'Inventory updated successfully' };
   }
 

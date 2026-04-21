@@ -2,7 +2,7 @@ import { IsInt, IsPositive, Min } from 'class-validator';
 export class CreateInventoryDto {
   @IsInt()
   @IsPositive()
-  @Min(1)
+  @Min(0)
   quantity: number;
   @IsInt()
   @IsPositive()

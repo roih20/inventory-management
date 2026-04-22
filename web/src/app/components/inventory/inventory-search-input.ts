@@ -10,6 +10,8 @@ import { LucideSearch } from '@lucide/angular';
       ></svg>
       <input
         type="text"
+        minlength="1"
+        maxlength="50"
         (keyup.enter)="searchProduct($event)"
         placeholder="Search"
         name="search"
@@ -27,6 +29,8 @@ export class InventorySearchInput {
 
   searchProduct(e: Event) {
     const el = e.target as HTMLInputElement;
-    this.onInputSearch.emit(el.value);
+    if (el.value.trim().length > 0) {
+      this.onInputSearch.emit(el.value);
+    }
   }
 }

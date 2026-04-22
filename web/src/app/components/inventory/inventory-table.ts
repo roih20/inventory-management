@@ -10,37 +10,38 @@ import { TableActionsBtn } from '@components/ui/table-actions-btn';
     >
       <thead class="bg-dark-regular">
         <tr class="text-left">
-          <th class="p-4 rounded-tl-2xl">Inventory ID</th>
-          <th class="p-4">Product Name</th>
-          <th class="p-4">Available Stock</th>
-          <th class="p-4">Stock Level</th>
+          <th class="p-4 rounded-tl-2xl">ID</th>
+          <th class="p-4">Product</th>
+          <th class="p-4">Category</th>
+          <th class="p-4">Quantity</th>
+          <th class="p-4">Status</th>
           <th class="p-4">Location</th>
-          <th class="p-4">Last Updated</th>
           <th class="p-4 rounded-tr-2xl"></th>
         </tr>
       </thead>
       <tbody class="bg-dark-regular">
-        @for (product of inventoryItems(); track product.id) {
+        @for (item of inventoryItems(); track item.id) {
           <tr class="group text-left text-primary-mutated">
             <td
               class="px-4 py-6 border-b border-dark-medium group-last:border-none group-last:rounded-bl-2xl"
             >
-              {{ product.id }}
+              {{ item.id }}
             </td>
             <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
-              {{ product.productName }}
+              {{ item.product.name }}
             </td>
             <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
-              {{ product.availableStock }}
+              {{ item.product.category.name }}
             </td>
             <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
-              {{ product.stockLevel }}
+              {{ item.quantity }}
             </td>
             <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
-              {{ product.location }}
+              {{ item.status }}
             </td>
+
             <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
-              {{ product.lastUpdated }}
+              {{ item.location.city }}, {{ item.location.state }} {{ item.location.zipCode }}
             </td>
             <td
               class="px-4 py-6 border-b border-dark-medium group-last:border-none group-last:rounded-br-2xl"

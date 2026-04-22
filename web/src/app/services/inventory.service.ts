@@ -6,8 +6,13 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class InventoryService {
   private http = inject(HttpClient);
-  private readonly url = 'data/inventory.json';
-  getInventory(): Observable<InventoryItem[]> {
-    return this.http.get<InventoryItem[]>(this.url);
+  private readonly API_URL = 'http://localhost:4321/inventory';
+
+  getAll(): Observable<InventoryItem[]> {
+    return this.http.get<InventoryItem[]>(this.API_URL);
+  }
+
+  searchInventory(term: string): Observable<InventoryItem[]> {
+    return this.http.get<InventoryItem[]>(`${this.API_URL}/search?product=${term}`);
   }
 }

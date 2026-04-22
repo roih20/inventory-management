@@ -3,7 +3,7 @@ import { NavPanel } from '@components/ui/nav-panel';
 import { InventorySearchInput } from '@components/inventory/inventory-search-input';
 import { InventoryFilterBtn } from '@components/inventory/invetory-filter-btn';
 import { InventorySortBtn } from '@components/inventory/inventory-sort-btn';
-import { InventoryTable } from '@features/tables/inventory-table';
+import { InventoryTable } from '@components/inventory/inventory-table';
 import { TablePagination } from '@components/ui/table-pagination';
 import { OrderStockBtn } from '@components/inventory/order-stock-btn';
 import { InventoryItem } from '@interfaces/intentoryItem.interface';
@@ -37,7 +37,7 @@ import { InventoryService } from '@services/inventory.service';
           @if (isModalOpen()) {
             <order-stock-modal (close)="closeModal($event)"></order-stock-modal>
           }
-          <inventory-table [inventoryItems]="filteredItems()"></inventory-table>
+          <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
           <table-pagination></table-pagination>
         </div>
       </div>
@@ -57,25 +57,18 @@ import { InventoryService } from '@services/inventory.service';
 export class AppInventory implements OnInit {
   private inventoryService = inject(InventoryService);
   inventoryItems = signal<InventoryItem[]>([]);
-  filteredItems = signal<InventoryItem[]>([]);
   isModalOpen = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.inventoryService.getInventory().subscribe({
-      next: (data) => {
-        this.inventoryItems.set(data);
-        this.filteredItems.set(data);
-      },
-      error: (error) => console.log(error),
-    });
+    this.getAllInventory();
   }
 
   onProductSearch(term: string) {
-    this.filteredItems.set(
-      this.inventoryItems().filter((item) =>
-        item.productName.toLowerCase().includes(term.toLowerCase()),
-      ),
-    );
+    this.inventoryService.searchInventory(term).subscribe({
+      next: (data) => {
+        this.inventoryItems.set(data);
+      },
+    });
   }
 
   onSelectedFilter(filters: Set<string>) {
@@ -88,5 +81,13 @@ export class AppInventory implements OnInit {
 
   closeModal(isClose: boolean) {
     this.isModalOpen.set(isClose);
+  }
+
+  private getAllInventory() {
+    this.inventoryService.getAll().subscribe({
+      next: (data) => {
+        this.inventoryItems.set(data);
+      },
+    });
   }
 }

@@ -9,12 +9,16 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  ParseEnumPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
 import { SortOptions } from 'src/enums/sortOptions.enum';
+import { OrderOptions } from 'src/enums/orderOptions.enum';
+import { SearchInventoryDto } from './dto/search-inventory.dto';
 
 @Controller('inventory')
 export class InventoryController {
@@ -28,29 +32,71 @@ export class InventoryController {
 
   @Get()
   findAll(
-    @Query('status') status?: InventoryStatus,
-    @Query('sort') sort?: SortOptions,
-    @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+    @Query(
+      'status',
+      new ParseEnumPipe(InventoryStatus, {
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+        optional: true,
+      }),
+    )
+    status?: InventoryStatus,
+    @Query(
+      'sort',
+      new ParseEnumPipe(SortOptions, {
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+        optional: true,
+      }),
+    )
+    sort?: SortOptions,
+    @Query(
+      'order',
+      new ParseEnumPipe(OrderOptions, {
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+        optional: true,
+      }),
+    )
+    order?: OrderOptions,
   ) {
     return this.inventoryService.findAll(status, sort, order);
   }
 
+  @Get('search')
+  searchInventory(@Query() query: SearchInventoryDto) {
+    return this.inventoryService.searchInventory(query.product);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.inventoryService.findOne(+id);
+  findOne(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ) {
+    return this.inventoryService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
     @Body() updateInventoryDto: UpdateInventoryDto,
   ) {
-    return this.inventoryService.update(+id, updateInventoryDto);
+    return this.inventoryService.update(id, updateInventoryDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.inventoryService.remove(+id);
+  remove(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ) {
+    return this.inventoryService.remove(id);
   }
 }

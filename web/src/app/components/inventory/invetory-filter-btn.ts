@@ -18,6 +18,7 @@ import { ClickOutsideDirective } from '@directives/clickOutside.directive';
         <inventory-filter-popover
           class="absolute top-full z-10 left-0 mt-2 w-44"
           [selectedFilters]="selectedFilters"
+          (onFilerChecked)="onFilterSelected($event)"
         ></inventory-filter-popover>
       }
     </div>
@@ -28,6 +29,15 @@ export class InventoryFilterBtn {
   isOpen = signal<boolean>(false);
   onFilterChecked = output<Set<string>>();
   selectedFilters = new Set<string>();
+
+  onFilterSelected(value: string) {
+    if (!this.selectedFilters.has(value)) {
+      this.selectedFilters.add(value);
+    } else {
+      this.selectedFilters.delete(value);
+    }
+    this.onFilterChecked.emit(this.selectedFilters);
+  }
 
   togglePopover() {
     this.isOpen.update((open) => !open);

@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { Inventory } from './entities/inventory.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from 'src/stores/entities/store.entity';
 import { Product } from 'src/products/entities/product.entity';
@@ -44,13 +44,13 @@ export class InventoryService {
   }
 
   findAll(
-    status?: InventoryStatus,
+    status?: InventoryStatus[],
     sort?: SortOptions,
     order?: OrderOptions,
   ): Promise<Inventory[]> {
     return this.inventoryRepository.find({
       where: {
-        status,
+        status: status ? In(status) : undefined,
       },
       order: sort
         ? {

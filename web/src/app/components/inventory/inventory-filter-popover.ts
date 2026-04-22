@@ -104,11 +104,6 @@ export class InventoryFilterPopover {
 
   onSelectFilter(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-
-    if (!this.selectedFilters().has(value)) {
-      this.selectedFilters().add(value);
-    } else {
-      this.selectedFilters().delete(value);
-    }
+    this.onFilerChecked.emit(value);
   }
 }

@@ -15,10 +15,10 @@ import {
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
 import { SortOptions } from 'src/enums/sortOptions.enum';
 import { OrderOptions } from 'src/enums/orderOptions.enum';
 import { SearchInventoryDto } from './dto/search-inventory.dto';
+import { FilterInventoryStatusDto } from './dto/filter-inventory-status.dto';
 
 @Controller('inventory')
 export class InventoryController {
@@ -32,14 +32,7 @@ export class InventoryController {
 
   @Get()
   findAll(
-    @Query(
-      'status',
-      new ParseEnumPipe(InventoryStatus, {
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-        optional: true,
-      }),
-    )
-    status?: InventoryStatus,
+    @Query() filter?: FilterInventoryStatusDto,
     @Query(
       'sort',
       new ParseEnumPipe(SortOptions, {
@@ -57,7 +50,7 @@ export class InventoryController {
     )
     order?: OrderOptions,
   ) {
-    return this.inventoryService.findAll(status, sort, order);
+    return this.inventoryService.findAll(filter?.status, sort, order);
   }
 
   @Get('search')

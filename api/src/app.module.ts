@@ -30,7 +30,7 @@ import { InventoryModule } from './inventory/inventory.module';
         synchronize: true,
       }),
     }),
-    ThrottlerModule.forRoot({
+    /*ThrottlerModule.forRoot({
       throttlers: [
         {
           name: 'default',
@@ -43,7 +43,7 @@ import { InventoryModule } from './inventory/inventory.module';
           limit: 5,
         },
       ],
-    }),
+    }),*/
     AuthModule,
     EmployeeModule,
     CategoriesModule,
@@ -52,6 +52,6 @@ import { InventoryModule } from './inventory/inventory.module';
     InventoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [AppService /*{ provide: APP_GUARD, useClass: ThrottlerGuard }*/],
 })
 export class AppModule {}

@@ -1,4 +1,5 @@
-import { Component, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LucideSearch } from '@lucide/angular';
 @Component({
   selector: 'inventory-search-input',
@@ -12,7 +13,8 @@ import { LucideSearch } from '@lucide/angular';
         type="text"
         minlength="1"
         maxlength="50"
-        (keyup.enter)="searchProduct($event)"
+        (input)="updateQueryParams($event)"
+        (keyup.enter)="searchProduct()"
         placeholder="Search"
         name="search"
         class="bg-dark-light w-full text-primary rounded-2xl pl-12 pr-4 py-3 inset-shadow-md focus:outline-none  focus:ring-0 placeholder:text-primary-mutated"
@@ -25,12 +27,21 @@ import { LucideSearch } from '@lucide/angular';
   },
 })
 export class InventorySearchInput {
-  onInputSearch = output<string>();
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  onInputSearch = output<string | null>();
 
-  searchProduct(e: Event) {
-    const el = e.target as HTMLInputElement;
-    if (el.value.trim().length > 0) {
-      this.onInputSearch.emit(el.value);
-    }
+  searchProduct() {
+    const product = this.route.snapshot.queryParamMap.get('product');
+    this.onInputSearch.emit(product);
+  }
+
+  updateQueryParams(e: Event) {
+    const product = (e.target as HTMLInputElement).value;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { product: product || null },
+      queryParamsHandling: 'merge',
+    });
   }
 }

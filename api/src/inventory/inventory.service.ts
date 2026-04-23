@@ -45,12 +45,16 @@ export class InventoryService {
 
   findAll(
     status?: InventoryStatus[],
+    location?: string[],
     sort?: SortOptions,
     order?: OrderOptions,
   ): Promise<Inventory[]> {
     return this.inventoryRepository.find({
       where: {
         status: status ? In(status) : undefined,
+        location: {
+          zipCode: location ? In(location) : undefined,
+        },
       },
       order: sort
         ? {

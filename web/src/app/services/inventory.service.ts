@@ -12,6 +12,10 @@ export class InventoryService {
     return this.http.get<InventoryItem[]>(this.API_URL);
   }
 
+  getSortedInventory(sort: string, order: 'ASC' | 'DESC'): Observable<InventoryItem[]> {
+    return this.http.get<InventoryItem[]>(`${this.API_URL}?sort=${sort}&order=${order}`);
+  }
+
   searchInventory(term: string): Observable<InventoryItem[]> {
     return this.http.get<InventoryItem[]>(`${this.API_URL}/search?product=${term}`);
   }

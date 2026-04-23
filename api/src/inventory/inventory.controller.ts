@@ -9,16 +9,13 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  ParseEnumPipe,
   ParseIntPipe,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { SortOptions } from 'src/enums/sortOptions.enum';
-import { OrderOptions } from 'src/enums/orderOptions.enum';
 import { SearchInventoryDto } from './dto/search-inventory.dto';
-import { FilterInventoryStatusDto } from './dto/filter-inventory-status.dto';
+import { InventoryParamsDto } from './dto/inventory-params.dto';
 
 @Controller('inventory')
 export class InventoryController {
@@ -31,26 +28,13 @@ export class InventoryController {
   }
 
   @Get()
-  findAll(
-    @Query() filter?: FilterInventoryStatusDto,
-    @Query(
-      'sort',
-      new ParseEnumPipe(SortOptions, {
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-        optional: true,
-      }),
-    )
-    sort?: SortOptions,
-    @Query(
-      'order',
-      new ParseEnumPipe(OrderOptions, {
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-        optional: true,
-      }),
-    )
-    order?: OrderOptions,
-  ) {
-    return this.inventoryService.findAll(filter?.status, sort, order);
+  findAll(@Query() filter?: InventoryParamsDto) {
+    return this.inventoryService.findAll(
+      filter?.status,
+      filter?.location,
+      filter?.sort,
+      filter?.order,
+    );
   }
 
   @Get('search')

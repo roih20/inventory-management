@@ -9,6 +9,7 @@ import { OrderStockBtn } from '@components/inventory/order-stock-btn';
 import { InventoryItem } from '@interfaces/intentoryItem.interface';
 import { OrderStockModal } from '@components/inventory/order-stock-modal';
 import { InventoryService } from '@services/inventory.service';
+
 @Component({
   selector: 'app-inventory',
   template: `
@@ -30,7 +31,7 @@ import { InventoryService } from '@services/inventory.service';
               <inventory-filter-btn
                 (onFilterChecked)="onSelectedFilter($event)"
               ></inventory-filter-btn>
-              <inventory-sort-btn></inventory-sort-btn>
+              <inventory-sort-btn (onSortSelected)="onSortSelected($event)"></inventory-sort-btn>
             </div>
             <order-stock-btn (openModal)="openModal($event)"></order-stock-btn>
           </div>
@@ -63,12 +64,16 @@ export class AppInventory implements OnInit {
     this.getAllInventory();
   }
 
-  onProductSearch(term: string) {
-    this.inventoryService.searchInventory(term).subscribe({
-      next: (data) => {
-        this.inventoryItems.set(data);
-      },
-    });
+  onProductSearch(product: string | null) {
+    if (product) {
+      this.searchInventory(product);
+    } else {
+      this.getAllInventory();
+    }
+  }
+
+  onSortSelected({ sort, order }: { sort: string; order: 'ASC' | 'DESC' }) {
+    this.getSortedInventory(sort, order);
   }
 
   onSelectedFilter(filters: Set<string>) {
@@ -85,6 +90,22 @@ export class AppInventory implements OnInit {
 
   private getAllInventory() {
     this.inventoryService.getAll().subscribe({
+      next: (data) => {
+        this.inventoryItems.set(data);
+      },
+    });
+  }
+
+  private searchInventory(term: string) {
+    this.inventoryService.searchInventory(term).subscribe({
+      next: (data) => {
+        this.inventoryItems.set(data);
+      },
+    });
+  }
+
+  private getSortedInventory(sort: string, order: 'ASC' | 'DESC') {
+    this.inventoryService.getSortedInventory(sort, order).subscribe({
       next: (data) => {
         this.inventoryItems.set(data);
       },

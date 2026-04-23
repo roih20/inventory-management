@@ -1,7 +1,8 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { LucideListFilter } from '@lucide/angular';
 import { InventoryFilterPopover } from './inventory-filter-popover';
 import { ClickOutsideDirective } from '@directives/clickOutside.directive';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'inventory-filter-btn',
@@ -26,8 +27,10 @@ import { ClickOutsideDirective } from '@directives/clickOutside.directive';
   imports: [LucideListFilter, InventoryFilterPopover, ClickOutsideDirective],
 })
 export class InventoryFilterBtn {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   isOpen = signal<boolean>(false);
-  onFilterChecked = output<Set<string>>();
+  onFilterChecked = output<string>();
   selectedFilters = new Set<string>();
 
   onFilterSelected(value: string) {
@@ -36,7 +39,14 @@ export class InventoryFilterBtn {
     } else {
       this.selectedFilters.delete(value);
     }
-    this.onFilterChecked.emit(this.selectedFilters);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        status: Array.from(this.selectedFilters).join(',') || null,
+      },
+      queryParamsHandling: 'merge',
+    });
+    this.onFilterChecked.emit(Array.from(this.selectedFilters).join(','));
   }
 
   togglePopover() {

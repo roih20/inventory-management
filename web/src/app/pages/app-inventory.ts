@@ -76,8 +76,12 @@ export class AppInventory implements OnInit {
     this.getSortedInventory(sort, order);
   }
 
-  onSelectedFilter(filters: Set<string>) {
-    console.log(filters);
+  onSelectedFilter(status: string) {
+    if (status.length > 0) {
+      this.getFilteredInventory(status);
+    } else {
+      this.getAllInventory();
+    }
   }
 
   openModal(isOpen: boolean) {
@@ -106,6 +110,14 @@ export class AppInventory implements OnInit {
 
   private getSortedInventory(sort: string, order: 'ASC' | 'DESC') {
     this.inventoryService.getSortedInventory(sort, order).subscribe({
+      next: (data) => {
+        this.inventoryItems.set(data);
+      },
+    });
+  }
+
+  private getFilteredInventory(status: string) {
+    this.inventoryService.getFilteredInventory(status).subscribe({
       next: (data) => {
         this.inventoryItems.set(data);
       },

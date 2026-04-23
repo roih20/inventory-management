@@ -19,4 +19,8 @@ export class InventoryService {
   searchInventory(term: string): Observable<InventoryItem[]> {
     return this.http.get<InventoryItem[]>(`${this.API_URL}/search?product=${term}`);
   }
+
+  getFilteredInventory(status: string): Observable<InventoryItem[]> {
+    return this.http.get<InventoryItem[]>(`${this.API_URL}?status=${status}`);
+  }
 }

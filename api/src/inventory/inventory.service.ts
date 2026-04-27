@@ -9,6 +9,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
 import { SortOptions } from 'src/enums/sortOptions.enum';
 import { OrderOptions } from 'src/enums/orderOptions.enum';
+import { PaginatedResult } from 'src/interfaces/pagination.interface';
 
 @Injectable()
 export class InventoryService {
@@ -40,9 +41,13 @@ export class InventoryService {
       product,
     });
     await this.inventoryRepository.save(inventory);
-    return { status: HttpStatus.OK, message: 'Inventory created successfully' };
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Inventory created successfully',
+    };
   }
 
+  /*
   findAll(
     status?: InventoryStatus[],
     location?: string[],
@@ -63,6 +68,31 @@ export class InventoryService {
         : undefined,
     });
   }
+  */
+
+  /*
+  async findAllPaginated(
+    size?: number,
+    cursor?: number,
+    status?: InventoryStatus[],
+  ): Promise<PaginatedResult<Inventory>> {
+    const inventory = await this.inventoryRepository.find({
+      where: {
+        id: MoreThanOrEqual(cursor || 1),
+        status: status ? In(status) : undefined,
+      },
+      take: (size || 5) + 1,
+      order: {
+        id: 'ASC',
+      },
+    });
+
+    const hasNextPage = inventory.length > (size || 5);
+    const data = hasNextPage ? inventory.slice(0, size || 5) : inventory;
+    const nextCursor = hasNextPage ? inventory[inventory.length - 1].id : null;
+    return { data, nextCursor };
+  }
+`*/
 
   searchInventory(query: string): Promise<Inventory[]> {
     return this.inventoryRepository.findBy({
@@ -70,6 +100,28 @@ export class InventoryService {
         name: ILike(`%${query}%`),
       },
     });
+  }
+
+  async findAllPaginated(
+    limit: number,
+    offset: number,
+    status?: InventoryStatus[],
+  ): Promise<PaginatedResult<Inventory>> {
+    const [inventory, totalElements] =
+      await this.inventoryRepository.findAndCount({
+        where: { status: status?.length ? In(status) : undefined },
+        order: { id: 'ASC' },
+        take: limit,
+        skip: offset,
+      });
+
+    return {
+      data: inventory,
+      numberOfElements: inventory.length,
+      totalElements,
+      hasNextPage: offset + inventory.length < totalElements,
+      hasPreviousPage: offset > 0,
+    };
   }
 
   async findOne(id: number): Promise<Inventory> {

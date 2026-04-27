@@ -15,7 +15,7 @@ import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { SearchInventoryDto } from './dto/search-inventory.dto';
-import { InventoryParamsDto } from './dto/inventory-params.dto';
+import { FilterInventoryDto } from './dto/filter-inventory.dto';
 
 @Controller('inventory')
 export class InventoryController {
@@ -27,6 +27,7 @@ export class InventoryController {
     return this.inventoryService.create(createInventoryDto);
   }
 
+  /*
   @Get()
   findAll(@Query() filter?: InventoryParamsDto) {
     return this.inventoryService.findAll(
@@ -34,6 +35,15 @@ export class InventoryController {
       filter?.location,
       filter?.sort,
       filter?.order,
+    );
+  }*/
+
+  @Get()
+  findAllPaginated(@Query() query: FilterInventoryDto) {
+    return this.inventoryService.findAllPaginated(
+      query.limit,
+      query.offset,
+      query?.status,
     );
   }
 

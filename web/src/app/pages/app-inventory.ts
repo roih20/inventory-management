@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { NavPanel } from '@components/ui/nav-panel';
 import { InventorySearchInput } from '@components/inventory/inventory-search-input';
 import { InventoryFilterBtn } from '@components/inventory/invetory-filter-btn';
@@ -13,7 +13,7 @@ import { InventoryService } from '@services/inventory.service';
 @Component({
   selector: 'app-inventory',
   template: `
-    <div class="bg-dark-regular max-h-dvh min-h-dvh flex">
+    <div class="bg-dark-regular flex">
       <!-- Navigation panel -->
       <nav-panel></nav-panel>
       <!-- Inventory content -->
@@ -60,28 +60,26 @@ export class AppInventory implements OnInit {
   inventoryItems = signal<InventoryItem[]>([]);
   isModalOpen = signal<boolean>(false);
 
+  constructor() {}
+
   ngOnInit(): void {
-    this.getAllInventory();
+    this.getAllPaginated();
   }
 
   onProductSearch(product: string | null) {
     if (product) {
       this.searchInventory(product);
     } else {
-      this.getAllInventory();
+      this.getAllPaginated();
     }
   }
 
   onSortSelected({ sort, order }: { sort: string; order: 'ASC' | 'DESC' }) {
-    this.getSortedInventory(sort, order);
+    //this.getSortedInventory(sort, order);
   }
 
   onSelectedFilter(status: string) {
-    if (status.length > 0) {
-      this.getFilteredInventory(status);
-    } else {
-      this.getAllInventory();
-    }
+    this.getAllPaginated(status);
   }
 
   openModal(isOpen: boolean) {
@@ -92,10 +90,11 @@ export class AppInventory implements OnInit {
     this.isModalOpen.set(isClose);
   }
 
-  private getAllInventory() {
-    this.inventoryService.getAll().subscribe({
+  private getAllPaginated(status?: string) {
+    this.inventoryService.getAllPaginated(status).subscribe({
       next: (data) => {
-        this.inventoryItems.set(data);
+        console.log(data);
+        this.inventoryItems.set(data.data);
       },
     });
   }
@@ -110,14 +109,6 @@ export class AppInventory implements OnInit {
 
   private getSortedInventory(sort: string, order: 'ASC' | 'DESC') {
     this.inventoryService.getSortedInventory(sort, order).subscribe({
-      next: (data) => {
-        this.inventoryItems.set(data);
-      },
-    });
-  }
-
-  private getFilteredInventory(status: string) {
-    this.inventoryService.getFilteredInventory(status).subscribe({
       next: (data) => {
         this.inventoryItems.set(data);
       },

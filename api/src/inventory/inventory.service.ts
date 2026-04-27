@@ -94,14 +94,6 @@ export class InventoryService {
   }
 `*/
 
-  searchInventory(query: string): Promise<Inventory[]> {
-    return this.inventoryRepository.findBy({
-      product: {
-        name: ILike(`%${query}%`),
-      },
-    });
-  }
-
   async findAllPaginated(
     limit: number,
     offset: number,
@@ -117,11 +109,21 @@ export class InventoryService {
 
     return {
       data: inventory,
+      totalPages: Math.ceil(totalElements / limit),
+      currentPage: offset > 0 ? Math.floor(offset / limit) + 1 : 1,
       numberOfElements: inventory.length,
       totalElements,
       hasNextPage: offset + inventory.length < totalElements,
       hasPreviousPage: offset > 0,
     };
+  }
+
+  searchInventory(query: string): Promise<Inventory[]> {
+    return this.inventoryRepository.findBy({
+      product: {
+        name: ILike(`%${query}%`),
+      },
+    });
   }
 
   async findOne(id: number): Promise<Inventory> {

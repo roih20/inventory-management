@@ -4,7 +4,7 @@ import { LucidePlus } from '@lucide/angular';
   selector: 'order-stock-btn',
   template: `
     <button
-      (click)="openStockModal()"
+      (click)="handleOpenModal()"
       class="flex items-center gap-x-2 rounded-xl bg-dark-light px-4 py-3 text-primary-mutated inset-shadow-md cursor-pointer"
     >
       <svg lucidePlus class="h-5 w-5"></svg>
@@ -16,7 +16,7 @@ import { LucidePlus } from '@lucide/angular';
 export class OrderStockBtn {
   openModal = output<boolean>();
 
-  openStockModal() {
+  handleOpenModal() {
     this.openModal.emit(true);
   }
 }

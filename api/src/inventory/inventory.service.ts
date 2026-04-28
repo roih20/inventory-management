@@ -47,53 +47,6 @@ export class InventoryService {
     };
   }
 
-  /*
-  findAll(
-    status?: InventoryStatus[],
-    location?: string[],
-    sort?: SortOptions,
-    order?: OrderOptions,
-  ): Promise<Inventory[]> {
-    return this.inventoryRepository.find({
-      where: {
-        status: status ? In(status) : undefined,
-        location: {
-          zipCode: location ? In(location) : undefined,
-        },
-      },
-      order: sort
-        ? {
-            [sort]: order,
-          }
-        : undefined,
-    });
-  }
-  */
-
-  /*
-  async findAllPaginated(
-    size?: number,
-    cursor?: number,
-    status?: InventoryStatus[],
-  ): Promise<PaginatedResult<Inventory>> {
-    const inventory = await this.inventoryRepository.find({
-      where: {
-        id: MoreThanOrEqual(cursor || 1),
-        status: status ? In(status) : undefined,
-      },
-      take: (size || 5) + 1,
-      order: {
-        id: 'ASC',
-      },
-    });
-
-    const hasNextPage = inventory.length > (size || 5);
-    const data = hasNextPage ? inventory.slice(0, size || 5) : inventory;
-    const nextCursor = hasNextPage ? inventory[inventory.length - 1].id : null;
-    return { data, nextCursor };
-  }
-`*/
-
   async findAllPaginated(
     limit: number,
     offset: number,
@@ -118,12 +71,28 @@ export class InventoryService {
     };
   }
 
-  searchInventory(query: string): Promise<Inventory[]> {
-    return this.inventoryRepository.findBy({
-      product: {
-        name: ILike(`%${query}%`),
-      },
-    });
+  async searchInventory(
+    query: string,
+    limit: number,
+    offset: number,
+  ): Promise<PaginatedResult<Inventory>> {
+    const [inventory, totalElements] =
+      await this.inventoryRepository.findAndCount({
+        where: { product: { name: ILike(`%${query}%`) } },
+        order: { id: 'ASC' },
+        take: limit,
+        skip: offset,
+      });
+
+    return {
+      data: inventory,
+      totalPages: Math.ceil(totalElements / limit),
+      currentPage: offset > 0 ? Math.floor(offset / limit) + 1 : 1,
+      numberOfElements: inventory.length,
+      totalElements,
+      hasNextPage: offset + inventory.length < totalElements,
+      hasPreviousPage: offset > 0,
+    };
   }
 
   async findOne(id: number): Promise<Inventory> {

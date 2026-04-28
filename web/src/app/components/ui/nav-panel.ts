@@ -9,6 +9,7 @@ import {
   LucideVan,
   LucideClipboardCheck,
   LucideDynamicIcon,
+  LucideClipboardList,
 } from '@lucide/angular';
 @Component({
   selector: 'nav-panel',
@@ -60,6 +61,11 @@ export class NavPanel {
       title: 'Inventory',
       href: '/dashboard/inventory',
       icon: LucideBox,
+    },
+    {
+      title: 'Products',
+      href: '/dashboard/products',
+      icon: LucideClipboardList,
     },
     {
       title: 'Sales',

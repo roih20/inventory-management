@@ -1,5 +1,4 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
-import { NavPanel } from '@components/ui/nav-panel';
 import { InventorySearchInput } from '@components/inventory/inventory-search-input';
 import { InventoryFilterBtn } from '@components/inventory/invetory-filter-btn';
 import { InventorySortBtn } from '@components/inventory/inventory-sort-btn';
@@ -9,48 +8,36 @@ import { OrderStockBtn } from '@components/inventory/order-stock-btn';
 import { InventoryItem } from '@interfaces/intentoryItem.interface';
 import { OrderStockModal } from '@components/inventory/order-stock-modal';
 import { InventoryService } from '@services/inventory.service';
-import { PaginationMetadata } from '@interfaces/pagination.interface';
+import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.interface';
 
 @Component({
   selector: 'app-inventory',
   template: `
-    <div class="bg-dark-regular flex">
-      <!-- Navigation panel -->
-      <nav-panel></nav-panel>
-      <!-- Inventory content -->
-      <div
-        class="bg-dark-bold w-full rounded-xl px-8 py-6 lg:px-12 lg:py-6 flex flex-col gap-y-8 overflow-y-auto lg:overflow-hidden"
-      >
-        <h1 class="text-primary text-4xl py-4">Inventory</h1>
-        <!-- Inventory table -->
-        <div class="bg-dark-regular p-8 rounded-2xl">
-          <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center justify-start gap-x-4 flex-1">
-              <inventory-search-input
-                (onInputSearch)="onProductSearch($event)"
-              ></inventory-search-input>
-              <inventory-filter-btn
-                (onFilterChecked)="onSelectedFilter($event)"
-              ></inventory-filter-btn>
-              <inventory-sort-btn (onSortSelected)="onSortSelected($event)"></inventory-sort-btn>
-            </div>
-            <order-stock-btn (openModal)="openModal($event)"></order-stock-btn>
-          </div>
-          @if (isModalOpen()) {
-            <order-stock-modal (close)="closeModal($event)"></order-stock-modal>
-          }
-          <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
-          <table-pagination
-            [paginationMetadata]="paginationMetadata()"
-            (fetchPreviousPage)="onPrevPage()"
-            (fetchNextPage)="onNextPage()"
-          ></table-pagination>
+    <h1 class="text-primary text-4xl mt-4 mb-6">Inventory</h1>
+    <!-- Inventory table -->
+    <div class="bg-dark-regular p-8 rounded-2xl">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-start gap-x-4 flex-1">
+          <inventory-search-input
+            (onInputSearch)="onProductSearch($event)"
+          ></inventory-search-input>
+          <inventory-filter-btn (onFilterChecked)="onSelectedFilter($event)"></inventory-filter-btn>
+          <inventory-sort-btn (onSortSelected)="onSortSelected($event)"></inventory-sort-btn>
         </div>
+        <order-stock-btn (openModal)="setModalOpen($event)"></order-stock-btn>
       </div>
+      @if (isModalOpen()) {
+        <order-stock-modal (closeModal)="setModalOpen($event)"></order-stock-modal>
+      }
+      <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
+      <table-pagination
+        [paginationMetadata]="paginationMetadata()"
+        (fetchPreviousPage)="onPrevPage()"
+        (fetchNextPage)="onNextPage()"
+      ></table-pagination>
     </div>
   `,
   imports: [
-    NavPanel,
     InventorySearchInput,
     InventoryFilterBtn,
     InventorySortBtn,
@@ -60,7 +47,7 @@ import { PaginationMetadata } from '@interfaces/pagination.interface';
     OrderStockModal,
   ],
 })
-export class AppInventory implements OnInit {
+export class Inventory implements OnInit {
   private inventoryService = inject(InventoryService);
   private readonly PAGE_SIZE = 10;
   inventoryItems = signal<InventoryItem[]>([]);
@@ -75,17 +62,15 @@ export class AppInventory implements OnInit {
     totalPages: 1,
   });
 
-  constructor() {}
-
   ngOnInit(): void {
     this.getAllPaginated();
   }
 
   onProductSearch(product: string | null) {
+    this.offset.set(0);
     if (product) {
       this.searchInventory(product);
     } else {
-      this.offset.set(0);
       this.getAllPaginated(0);
     }
   }
@@ -108,43 +93,40 @@ export class AppInventory implements OnInit {
     this.getAllPaginated(0, status);
   }
 
-  openModal(isOpen: boolean) {
+  setModalOpen(isOpen: boolean) {
     this.isModalOpen.set(isOpen);
-  }
-
-  closeModal(isClose: boolean) {
-    this.isModalOpen.set(isClose);
   }
 
   private getAllPaginated(offset?: number, status?: string) {
     this.inventoryService.getAllPaginated(offset, status).subscribe({
-      next: (data) => {
-        const {
-          hasNextPage,
-          hasPreviousPage,
-          totalElements,
-          currentPage,
-          numberOfElements,
-          totalPages,
-        } = data;
-        this.inventoryItems.set(data.data);
-        this.paginationMetadata.set({
-          hasNextPage,
-          hasPreviousPage,
-          totalElements,
-          currentPage,
-          numberOfElements,
-          totalPages,
-        });
-      },
+      next: (data) => this.setPaginationResult(data),
     });
   }
 
   private searchInventory(term: string) {
     this.inventoryService.searchInventory(term).subscribe({
-      next: (data) => {
-        this.inventoryItems.set(data);
-      },
+      next: (data) => this.setPaginationResult(data),
+    });
+  }
+
+  private setPaginationResult(result: PaginatedResult<InventoryItem>) {
+    const {
+      data,
+      hasNextPage,
+      hasPreviousPage,
+      totalElements,
+      currentPage,
+      numberOfElements,
+      totalPages,
+    } = result;
+    this.inventoryItems.set(data);
+    this.paginationMetadata.set({
+      hasNextPage,
+      hasPreviousPage,
+      totalElements,
+      currentPage,
+      numberOfElements,
+      totalPages,
     });
   }
 

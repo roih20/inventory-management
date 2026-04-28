@@ -27,17 +27,6 @@ export class InventoryController {
     return this.inventoryService.create(createInventoryDto);
   }
 
-  /*
-  @Get()
-  findAll(@Query() filter?: InventoryParamsDto) {
-    return this.inventoryService.findAll(
-      filter?.status,
-      filter?.location,
-      filter?.sort,
-      filter?.order,
-    );
-  }*/
-
   @Get()
   findAllPaginated(@Query() query: FilterInventoryDto) {
     return this.inventoryService.findAllPaginated(
@@ -49,7 +38,11 @@ export class InventoryController {
 
   @Get('search')
   searchInventory(@Query() query: SearchInventoryDto) {
-    return this.inventoryService.searchInventory(query.product);
+    return this.inventoryService.searchInventory(
+      query.product,
+      query.limit,
+      query.offset,
+    );
   }
 
   @Get(':id')

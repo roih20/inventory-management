@@ -14,7 +14,7 @@ import { LucideX } from '@lucide/angular';
           <h2 class="text-left text-lg">Order Stock</h2>
           <button
             type="button"
-            (click)="closeModal()"
+            (click)="handleCloseModal()"
             class="text-primary cursor-pointer hover:bg-dark-medium rounded-lg p-1"
           >
             <svg lucideX class="h-5 w-5"></svg>
@@ -48,7 +48,7 @@ import { LucideX } from '@lucide/angular';
           <div class="flex items-center justify-between">
             <button
               type="button"
-              (click)="closeModal()"
+              (click)="handleCloseModal()"
               class="px-3 py-1.5 bg-dark-light rounded-xl cursor-pointer text-primary-mutated hover:bg-dark-medium"
             >
               Cancel
@@ -74,7 +74,7 @@ export class OrderStockModal {
     quantity: [0, [Validators.required, Validators.min(1), Validators.max(99)]],
     location: ['', Validators.required],
   });
-  close = output<boolean>();
+  closeModal = output<boolean>();
 
   onSubmit() {
     console.log(this.orderStockForm.value);
@@ -82,7 +82,7 @@ export class OrderStockModal {
     //this.closeModal();
   }
 
-  closeModal() {
-    this.close.emit(false);
+  handleCloseModal() {
+    this.closeModal.emit(false);
   }
 }

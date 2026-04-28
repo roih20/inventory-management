@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { AppDashboard } from '@pages/app-dashboard';
 import { AppAuth } from '@pages/app-auth';
+import { DashboardLayout } from './layouts/app-dashboard-layout';
 
 export const routes: Routes = [
   {
@@ -9,13 +9,24 @@ export const routes: Routes = [
     component: AppAuth,
   },
   {
-    path: 'dashboard/inventory',
-    title: 'Inventory',
-    loadComponent: () => import('@pages/app-inventory').then((m) => m.AppInventory),
-  },
-  {
     path: 'dashboard',
-    title: 'Dashboard',
-    component: AppDashboard,
+    component: DashboardLayout,
+    children: [
+      {
+        path: '',
+        title: 'Dashboard',
+        loadComponent: () => import('@pages/app-dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'inventory',
+        title: 'Inventory',
+        loadComponent: () => import('@pages/app-inventory').then((m) => m.Inventory),
+      },
+      {
+        path: 'products',
+        title: 'Products',
+        loadComponent: () => import('@pages/app-products').then((m) => m.Products),
+      },
+    ],
   },
 ];

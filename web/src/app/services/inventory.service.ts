@@ -29,7 +29,15 @@ export class InventoryService {
     return this.http.get<InventoryItem[]>(`${this.API_URL}?sort=${sort}&order=${order}`);
   }
 
-  searchInventory(term: string): Observable<InventoryItem[]> {
-    return this.http.get<InventoryItem[]>(`${this.API_URL}/search?product=${term}`);
+  searchInventory(product: string, offset?: number): Observable<PaginatedResult<InventoryItem>> {
+    let params = new HttpParams();
+
+    params = params.set('product', product);
+
+    if (offset !== undefined) {
+      params = params.set('offset', offset);
+    }
+
+    return this.http.get<PaginatedResult<InventoryItem>>(`${this.API_URL}/search`, { params });
   }
 }

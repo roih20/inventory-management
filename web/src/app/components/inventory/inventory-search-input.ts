@@ -17,13 +17,13 @@ import { LucideSearch } from '@lucide/angular';
         (keyup.enter)="searchProduct()"
         placeholder="Search"
         name="search"
-        class="bg-dark-light w-full text-primary rounded-2xl pl-12 pr-4 py-3 inset-shadow-md focus:outline-none  focus:ring-0 placeholder:text-primary-mutated"
+        class="bg-dark-light w-full text-primary rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-0 placeholder:text-primary"
       />
     </div>
   `,
   imports: [LucideSearch],
   host: {
-    class: 'lg:w-1/3 xl:w-1/6',
+    class: 'w-full max-w-sm',
   },
 })
 export class InventorySearchInput {

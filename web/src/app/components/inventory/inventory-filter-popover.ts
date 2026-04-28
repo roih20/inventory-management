@@ -3,7 +3,7 @@ import { LucideCheck } from '@lucide/angular';
 @Component({
   selector: 'inventory-filter-popover',
   template: `
-    <div class="bg-dark-light p-2 rounded-xl text-primary-mutated inset-shadow-md">
+    <div class="bg-dark-light px-2 py-3 rounded-xl text-primary-mutated">
       <div class="mb-1">
         <h4 class="uppercase text-sm font-medium py-1 px-1">Stock level</h4>
         <ul class="flex flex-col gap-y-3 py-1 text-sm">

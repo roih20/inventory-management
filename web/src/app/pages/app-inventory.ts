@@ -9,6 +9,7 @@ import { OrderStockBtn } from '@components/inventory/order-stock-btn';
 import { InventoryItem } from '@interfaces/intentoryItem.interface';
 import { OrderStockModal } from '@components/inventory/order-stock-modal';
 import { InventoryService } from '@services/inventory.service';
+import { PaginationMetadata } from '@interfaces/pagination.interface';
 
 @Component({
   selector: 'app-inventory',
@@ -22,8 +23,8 @@ import { InventoryService } from '@services/inventory.service';
       >
         <h1 class="text-primary text-4xl py-4">Inventory</h1>
         <!-- Inventory table -->
-        <div class="p-4 ">
-          <div class="flex items-center justify-between mb-12">
+        <div class="bg-dark-regular p-8 rounded-2xl">
+          <div class="flex items-center justify-between mb-8">
             <div class="flex items-center justify-start gap-x-4 flex-1">
               <inventory-search-input
                 (onInputSearch)="onProductSearch($event)"
@@ -39,7 +40,11 @@ import { InventoryService } from '@services/inventory.service';
             <order-stock-modal (close)="closeModal($event)"></order-stock-modal>
           }
           <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
-          <table-pagination></table-pagination>
+          <table-pagination
+            [paginationMetadata]="paginationMetadata()"
+            (fetchPreviousPage)="onPrevPage()"
+            (fetchNextPage)="onNextPage()"
+          ></table-pagination>
         </div>
       </div>
     </div>
@@ -57,8 +62,18 @@ import { InventoryService } from '@services/inventory.service';
 })
 export class AppInventory implements OnInit {
   private inventoryService = inject(InventoryService);
+  private readonly PAGE_SIZE = 10;
   inventoryItems = signal<InventoryItem[]>([]);
   isModalOpen = signal<boolean>(false);
+  offset = signal<number>(0);
+  paginationMetadata = signal<PaginationMetadata>({
+    hasNextPage: false,
+    hasPreviousPage: false,
+    totalElements: 0,
+    numberOfElements: 0,
+    currentPage: 1,
+    totalPages: 1,
+  });
 
   constructor() {}
 
@@ -70,8 +85,19 @@ export class AppInventory implements OnInit {
     if (product) {
       this.searchInventory(product);
     } else {
-      this.getAllPaginated();
+      this.offset.set(0);
+      this.getAllPaginated(0);
     }
+  }
+
+  onNextPage() {
+    this.offset.update((value) => value + this.PAGE_SIZE);
+    this.getAllPaginated(this.offset());
+  }
+
+  onPrevPage() {
+    this.offset.update((value) => value - this.PAGE_SIZE);
+    this.getAllPaginated(this.offset());
   }
 
   onSortSelected({ sort, order }: { sort: string; order: 'ASC' | 'DESC' }) {
@@ -79,7 +105,7 @@ export class AppInventory implements OnInit {
   }
 
   onSelectedFilter(status: string) {
-    this.getAllPaginated(status);
+    this.getAllPaginated(0, status);
   }
 
   openModal(isOpen: boolean) {
@@ -90,11 +116,26 @@ export class AppInventory implements OnInit {
     this.isModalOpen.set(isClose);
   }
 
-  private getAllPaginated(status?: string) {
-    this.inventoryService.getAllPaginated(status).subscribe({
+  private getAllPaginated(offset?: number, status?: string) {
+    this.inventoryService.getAllPaginated(offset, status).subscribe({
       next: (data) => {
-        console.log(data);
+        const {
+          hasNextPage,
+          hasPreviousPage,
+          totalElements,
+          currentPage,
+          numberOfElements,
+          totalPages,
+        } = data;
         this.inventoryItems.set(data.data);
+        this.paginationMetadata.set({
+          hasNextPage,
+          hasPreviousPage,
+          totalElements,
+          currentPage,
+          numberOfElements,
+          totalPages,
+        });
       },
     });
   }

@@ -9,7 +9,7 @@ import { ClickOutsideDirective } from '@directives/clickOutside.directive';
     <div class="relative" (clickOutside)="closePopover()">
       <button
         (click)="togglePopover()"
-        class="bg-dark-light text-primary-mutated rounded-2xl px-4 py-3 flex items-center gap-x-2 inset-shadow-md cursor-pointer "
+        class="bg-dark-light text-primary rounded-xl px-4 py-3 flex items-center gap-x-2 cursor-pointer "
       >
         <svg lucideListFilter class="h-5 w-5"></svg>
         Filter

@@ -1,26 +1,49 @@
-import { Component } from '@angular/core';
-import { LucideArrowLeft } from '@lucide/angular';
-import { LucideArrowRight } from '@lucide/angular';
+import { Component, input, output } from '@angular/core';
+import { PaginationMetadata } from '@interfaces/pagination.interface';
+import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
 
 @Component({
   selector: 'table-pagination',
   template: ` <div class="text-primary flex items-center justify-between mt-8 px-2">
-    <p class="font-light">Showing <span class="font-medium">1 - 10</span> of 100 results</p>
+    <p class="font-light">
+      Showing {{ paginationMetadata().numberOfElements }} of
+      {{ paginationMetadata().totalElements }} results
+    </p>
     <div class="flex items-center gap-x-8">
       <button
-        class="flex items-center gap-x-2 bg-dark-light px-3 py-1.5 rounded-lg inset-shadow-md"
+        [disabled]="!paginationMetadata().hasPreviousPage"
+        (click)="handlePrevPage()"
+        class="bg-dark-light px-3 py-2 rounded-lg cursor-pointer inset-shadow-md disabled:cursor-not-allowed"
       >
-        <svg lucideArrowLeft class="h-5 w-5"></svg>
-        <span>Previous</span>
+        <svg lucideChevronLeft class="h-5 w-5"></svg>
       </button>
+      <ol class="flex items-center gap-x-2 text-primary-mutated">
+        @for (page of pages; track page) {
+          <li class="px-2.5 py-2">{{ page }}</li>
+        }
+      </ol>
       <button
-        class="flex items-center gap-x-2 bg-dark-light px-3 py-1.5 rounded-lg inset-shadow-md"
+        [disabled]="!paginationMetadata().hasNextPage"
+        (click)="handleNextPage()"
+        class="bg-dark-light px-3 py-2 rounded-lg cursor-pointer inset-shadow-md disabled:cursor-not-allowed"
       >
-        <span>Next</span>
-        <svg lucideArrowRight class="h-5 w-5"></svg>
+        <svg lucideChevronRight class="h-5 w-5"></svg>
       </button>
     </div>
   </div>`,
-  imports: [LucideArrowLeft, LucideArrowRight],
+  imports: [LucideChevronLeft, LucideChevronRight],
 })
-export class TablePagination {}
+export class TablePagination {
+  paginationMetadata = input.required<PaginationMetadata>();
+  fetchNextPage = output<void>();
+  fetchPreviousPage = output<void>();
+  readonly pages = [1, 2, 3, 4, 5];
+
+  handleNextPage() {
+    this.fetchNextPage.emit();
+  }
+
+  handlePrevPage() {
+    this.fetchPreviousPage.emit();
+  }
+}

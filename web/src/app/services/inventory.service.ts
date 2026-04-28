@@ -9,11 +9,14 @@ export class InventoryService {
   private http = inject(HttpClient);
   private readonly API_URL = 'http://localhost:4321/inventory';
 
-  getAllPaginated(status?: string): Observable<PaginatedResult<InventoryItem>> {
+  getAllPaginated(offset?: number, status?: string): Observable<PaginatedResult<InventoryItem>> {
     let params = new HttpParams();
 
     params = params.set('limit', 10);
-    params = params.set('offset', 0);
+
+    if (offset != undefined) {
+      params = params.set('offset', offset);
+    }
 
     if (status != undefined && status.length > 0) {
       params = params.set('status', status);

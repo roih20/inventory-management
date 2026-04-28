@@ -5,47 +5,41 @@ import { TableActionsBtn } from '@components/ui/table-actions-btn';
 @Component({
   selector: 'inventory-table',
   template: `
-    <table
-      class="w-full text-primary table-auto border-separate border-spacing-0 border border-dark-medium rounded-2xl"
-    >
-      <thead class="bg-dark-regular">
-        <tr class="text-left">
-          <th class="p-4 rounded-tl-2xl">ID</th>
-          <th class="p-4">Product</th>
-          <th class="p-4">Category</th>
-          <th class="p-4">Quantity</th>
-          <th class="p-4">Status</th>
-          <th class="p-4">Location</th>
-          <th class="p-4 rounded-tr-2xl"></th>
+    <table class="w-full table-auto">
+      <thead class="">
+        <tr class="text-left text-primary border-b border-dark-medium">
+          <th class="px-4 pb-5 pt-2">ID</th>
+          <th class="px-4 pb-5 pt-2">Product</th>
+          <th class="px-4 pb-5 pt-2">Category</th>
+          <th class="px-4 pb-5 pt-2">Quantity</th>
+          <th class="px-4 pb-5 pt-2">Status</th>
+          <th class="px-4 pb-5 pt-2">Location</th>
+          <th class="px-4 pb-5 pt-2"></th>
         </tr>
       </thead>
-      <tbody class="bg-dark-regular">
+      <tbody class="">
         @for (item of inventoryItems(); track item.id) {
-          <tr class="group text-left text-primary-mutated">
-            <td
-              class="px-4 py-6 border-b border-dark-medium group-last:border-none group-last:rounded-bl-2xl"
-            >
+          <tr class="text-left text-primary-mutated border-b border-dark-medium last:border-0">
+            <td class="px-4 py-6">
               {{ item.id }}
             </td>
-            <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
+            <td class="px-4 py-6">
               {{ item.product.name }}
             </td>
-            <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
+            <td class="px-4 py-6">
               {{ item.product.category.name }}
             </td>
-            <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
+            <td class="px-4 py-6">
               {{ item.quantity }}
             </td>
-            <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
+            <td class="px-4 py-6">
               {{ item.status }}
             </td>
 
-            <td class="px-4 py-6 border-b border-dark-medium group-last:border-none">
+            <td class="px-4 py-6 ">
               {{ item.location.city }}, {{ item.location.state }} {{ item.location.zipCode }}
             </td>
-            <td
-              class="px-4 py-6 border-b border-dark-medium group-last:border-none group-last:rounded-br-2xl"
-            >
+            <td class="px-4 py-6">
               <table-actions-btn></table-actions-btn>
             </td>
           </tr>

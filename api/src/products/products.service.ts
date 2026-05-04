@@ -7,6 +7,7 @@ import { Product } from './entities/product.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { SortOptions } from 'src/enums/sortOptions.enum';
 import { OrderOptions } from 'src/enums/orderOptions.enum';
+import { PaginatedResult } from 'src/interfaces/pagination.interface';
 @Injectable()
 export class ProductsService {
   constructor(
@@ -50,6 +51,27 @@ export class ProductsService {
           }
         : undefined,
     });
+  }
+
+  async findAllPaginated(
+    limit: number,
+    offset: number,
+  ): Promise<PaginatedResult<Product>> {
+    const [products, totalElements] = await this.productsService.findAndCount({
+      order: { id: 'ASC' },
+      take: limit,
+      skip: offset,
+    });
+
+    return {
+      data: products,
+      totalPages: Math.ceil(totalElements / limit),
+      currentPage: offset > 0 ? Math.floor(offset / limit) + 1 : 1,
+      totalElements,
+      numberOfElements: products.length,
+      hasNextPage: offset + products.length < totalElements,
+      hasPreviousPage: offset > 0,
+    };
   }
 
   async findOne(id: number): Promise<Product> {

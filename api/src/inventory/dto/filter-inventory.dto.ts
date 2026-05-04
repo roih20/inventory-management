@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsArray, IsEnum, IsOptional } from 'class-validator';
 import { InventoryStatus } from 'src/enums/inventoryStatus.enum';
-import { PaginationDto } from './pagination.dto';
+import { PaginationDto } from '../../dtos/pagination.dto';
 
 export class FilterInventoryDto extends PaginationDto {
   @Transform(({ value }) => value.split(','))

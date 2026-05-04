@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { PaginationDto } from './pagination.dto';
+import { PaginationDto } from '../../dtos/pagination.dto';
 
 export class SearchInventoryDto extends PaginationDto {
   @IsString()

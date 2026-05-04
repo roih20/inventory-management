@@ -8,7 +8,7 @@ import { ClickOutsideDirective } from '@directives/clickOutside.directive';
     <div class="relative" (clickOutside)="closePopover()">
       <button
         (click)="togglePopover()"
-        class="bg-dark-light text-primary-mutated rounded-2xl px-4 py-3 flex items-center gap-x-2 inset-shadow-md cursor-pointer"
+        class="bg-dark-light text-primary rounded-xl p-4 border border-dark-medium flex items-center gap-x-2 cursor-pointer"
       >
         <svg lucideArrowDownWideNarrow class="h-5 w-5"></svg>
         Sort

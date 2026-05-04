@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
-import { InventorySearchInput } from '@components/inventory/inventory-search-input';
+import { SearchInput } from '@components/ui/search-input';
 import { InventoryFilterBtn } from '@components/inventory/invetory-filter-btn';
 import { InventorySortBtn } from '@components/inventory/inventory-sort-btn';
 import { InventoryTable } from '@components/inventory/inventory-table';
@@ -13,32 +13,37 @@ import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.inte
 @Component({
   selector: 'app-inventory',
   template: `
-    <h1 class="text-primary text-4xl mt-4 mb-6">Inventory</h1>
-    <!-- Inventory table -->
-    <div class="bg-dark-regular p-8 rounded-2xl">
-      <div class="flex items-center justify-between mb-8">
+    <div class="bg-dark-regular px-8 py-6 border border-dark-light rounded-xl flex flex-col">
+      <h2 class="text-primary text-3xl mb-2">Inventory</h2>
+      <p class="text-primary-mutated">Manage and track stock in real-time.</p>
+      <hr class="text-dark-medium my-4" />
+      <!-- Inventory table -->
+      <div class="flex items-center justify-between mt-2 mb-8">
         <div class="flex items-center justify-start gap-x-4 flex-1">
-          <inventory-search-input
-            (onInputSearch)="onProductSearch($event)"
-          ></inventory-search-input>
+          <search-input (onInputSearch)="onProductSearch($event)"></search-input>
           <inventory-filter-btn (onFilterChecked)="onSelectedFilter($event)"></inventory-filter-btn>
           <inventory-sort-btn (onSortSelected)="onSortSelected($event)"></inventory-sort-btn>
         </div>
         <order-stock-btn (openModal)="setModalOpen($event)"></order-stock-btn>
       </div>
-      @if (isModalOpen()) {
-        <order-stock-modal (closeModal)="setModalOpen($event)"></order-stock-modal>
-      }
-      <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
-      <table-pagination
-        [paginationMetadata]="paginationMetadata()"
-        (fetchPreviousPage)="onPrevPage()"
-        (fetchNextPage)="onNextPage()"
-      ></table-pagination>
+      <div class="rounded-xl border border-dark-medium">
+        @if (isModalOpen()) {
+          <order-stock-modal (closeModal)="setModalOpen($event)"></order-stock-modal>
+        }
+        <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
+        <table-pagination
+          [paginationMetadata]="paginationMetadata()"
+          (fetchPreviousPage)="onPrevPage()"
+          (fetchNextPage)="onNextPage()"
+        ></table-pagination>
+      </div>
     </div>
   `,
+  host: {
+    class: '',
+  },
   imports: [
-    InventorySearchInput,
+    SearchInput,
     InventoryFilterBtn,
     InventorySortBtn,
     InventoryTable,

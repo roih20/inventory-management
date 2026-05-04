@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
   template: `<div class="flex bg-dark-regular">
     <nav-panel></nav-panel>
     <div
-      class="bg-dark-bold w-full rounded-xl px-8 py-6 lg:px-12 lg:py-6 overflow-y-auto lg:overflow-hidden"
+      class="bg-dark-bold w-full rounded-xl p-6 lg:px-4 lg:py-6 overflow-y-auto lg:overflow-hidden"
     >
       <router-outlet></router-outlet>
     </div>

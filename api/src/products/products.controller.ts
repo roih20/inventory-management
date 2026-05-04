@@ -17,6 +17,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { SortOptions } from 'src/enums/sortOptions.enum';
 import { OrderOptions } from 'src/enums/orderOptions.enum';
+import { PaginationDto } from 'src/dtos/pagination.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -29,33 +30,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(
-    @Query(
-      'category',
-      new ParseIntPipe({
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-        optional: true,
-      }),
-    )
-    categoryId?: number,
-    @Query(
-      'sort',
-      new ParseEnumPipe(SortOptions, {
-        optional: true,
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-      }),
-    )
-    sort?: SortOptions,
-    @Query(
-      'order',
-      new ParseEnumPipe(OrderOptions, {
-        optional: true,
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-      }),
-    )
-    order?: OrderOptions,
-  ) {
-    return this.productsService.findAll(categoryId, sort, order);
+  findAllPaginated(@Query() query: PaginationDto) {
+    return this.productsService.findAllPaginated(query.limit, query.offset);
   }
 
   @Get(':id')

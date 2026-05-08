@@ -9,7 +9,6 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  ParseEnumPipe,
   ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -18,6 +17,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { SortOptions } from 'src/enums/sortOptions.enum';
 import { OrderOptions } from 'src/enums/orderOptions.enum';
 import { PaginationDto } from 'src/dtos/pagination.dto';
+import { SearchProductDto } from './dto/search-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -32,6 +32,15 @@ export class ProductsController {
   @Get()
   findAllPaginated(@Query() query: PaginationDto) {
     return this.productsService.findAllPaginated(query.limit, query.offset);
+  }
+
+  @Get('search')
+  searchProduct(@Query() query: SearchProductDto) {
+    return this.productsService.searchProduct(
+      query.product,
+      query.limit,
+      query.offset,
+    );
   }
 
   @Get(':id')

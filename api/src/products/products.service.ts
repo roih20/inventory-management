@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { SortOptions } from 'src/enums/sortOptions.enum';
@@ -70,6 +70,28 @@ export class ProductsService {
       totalElements,
       numberOfElements: products.length,
       hasNextPage: offset + products.length < totalElements,
+      hasPreviousPage: offset > 0,
+    };
+  }
+
+  async searchProduct(
+    product: string,
+    limit: number,
+    offset: number,
+  ): Promise<PaginatedResult<Product>> {
+    const [products, totalElements] = await this.productsService.findAndCount({
+      where: { name: ILike(`%${product}%`) },
+      order: { id: 'ASC' },
+      take: limit,
+      skip: offset,
+    });
+    return {
+      data: products,
+      totalPages: Math.ceil(totalElements / limit),
+      currentPage: offset > 0 ? Math.floor(offset / limit) + 1 : 1,
+      totalElements,
+      numberOfElements: products.length,
+      hasNextPage: offset + product.length < totalElements,
       hasPreviousPage: offset > 0,
     };
   }

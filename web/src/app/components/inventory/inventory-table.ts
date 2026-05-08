@@ -21,25 +21,25 @@ import { LucideMapPin, LucideAArrowDown } from '@lucide/angular';
       <tbody class="bg-dark-light">
         @for (item of inventoryItems(); track item.id) {
           <tr class="text-left text-primary-mutated border-b border-dark-medium last:border-0">
-            <td class="p-6">
+            <td class="px-6 py-5">
               {{ item.id }}
             </td>
-            <td class="p-6 font-bold text-primary">
+            <td class="px-6 py-5 font-bold text-primary">
               {{ item.product.name }}
             </td>
-            <td class="p-6">
-              <div class="px-3 py-0.5 bg-dark-regular rounded-full text-center inline-block">
+            <td class="px-6 py-5">
+              <div class="px-3 py-1 bg-dark-mutated rounded-full text-center inline-block">
                 {{ item.product.category.name }}
               </div>
             </td>
-            <td class="p-6 font-bold text-primary">
+            <td class="px-6 py-5 font-bold text-primary">
               {{ item.quantity }}
             </td>
-            <td class="p-6">
+            <td class="px-6 py-5">
               <div [class]="statusPill(item.status)">{{ item.status }}</div>
             </td>
 
-            <td class="p-6">
+            <td class="px-6 py-5">
               <div class="flex items-center gap-x-2">
                 <svg lucideMapPin class="h-5 w-5 text-primary"></svg>
                 <p>
@@ -47,7 +47,7 @@ import { LucideMapPin, LucideAArrowDown } from '@lucide/angular';
                 </p>
               </div>
             </td>
-            <td class="p-6">
+            <td class="px-6 py-5">
               <table-actions-btn></table-actions-btn>
             </td>
           </tr>
@@ -61,7 +61,7 @@ export class InventoryTable {
   inventoryItems = input<InventoryItem[]>();
 
   statusPill(status: string): string {
-    let cssClass = 'px-3 py-0.5 rounded-full text-center inline-block';
+    let cssClass = 'px-3 py-1 rounded-full text-center inline-block';
     switch (status) {
       case 'High':
         cssClass += ' bg-pill-green text-pill-green-mutated';

@@ -3,6 +3,8 @@ import { ProductService } from '@services/product.service';
 import { Product } from '@interfaces/product.interface';
 import { ProductsTable } from '@components/products/products-table';
 import { SearchInput } from '@components/ui/search-input';
+import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.interface';
+import { TablePagination } from '@components/ui/table-pagination';
 
 @Component({
   selector: 'app-products',
@@ -16,14 +18,33 @@ import { SearchInput } from '@components/ui/search-input';
       </div>
       <div class="rounded-xl border border-dark-medium">
         <products-table [products]="products()"></products-table>
+        <table-pagination
+          [paginationMetadata]="paginationMetadata()"
+          (changePage)="onPageChange($event)"
+        >
+        </table-pagination>
       </div>
     </div>
   `,
-  imports: [ProductsTable, SearchInput],
+  imports: [ProductsTable, SearchInput, TablePagination],
 })
 export class Products implements OnInit {
-  productService = inject(ProductService);
+  readonly PAGE_SIZE = 10;
+  protected readonly productService = inject(ProductService);
   products = signal<Product[]>([]);
+  currentOffset = signal<number>(0);
+  paginationMetadata = signal<PaginationMetadata>({
+    hasNextPage: false,
+    hasPreviousPage: false,
+    totalElements: 0,
+    numberOfElements: 0,
+    currentPage: 1,
+    totalPages: 1,
+  });
+
+  constructor() {
+    console.log(this.currentOffset());
+  }
 
   ngOnInit(): void {
     this.getProducts();
@@ -37,21 +58,49 @@ export class Products implements OnInit {
     }
   }
 
+  onPageChange(currentPage: number) {
+    this.currentOffset.set((currentPage - 1) * 10);
+    this.getProducts();
+  }
+
   private getProducts(): void {
-    this.productService.getAllPaginated().subscribe({
-      next: (data) => {
-        console.log(data);
-        this.products.set(data.data);
+    this.productService.fetchProducts(this.currentOffset()).subscribe({
+      next: (result) => {
+        this.setPaginationResult(result);
+      },
+      error: (response) => {
+        console.log(response);
       },
     });
   }
 
   private getSearchedProducts(product: string) {
-    this.productService.getSearchedProducts(product).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.products.set(data.data);
+    this.productService.searchProduct(product, this.currentOffset()).subscribe({
+      next: (result) => {
+        this.setPaginationResult(result);
       },
+      error: (response) => console.error(response),
     });
+  }
+
+  private setPaginationResult(result: PaginatedResult<Product>) {
+    const {
+      data,
+      hasNextPage,
+      hasPreviousPage,
+      totalElements,
+      totalPages,
+      numberOfElements,
+      currentPage,
+    } = result;
+    this.paginationMetadata.set({
+      hasNextPage,
+      hasPreviousPage,
+      totalElements,
+      totalPages,
+      numberOfElements,
+      currentPage,
+    });
+    this.products.set(data);
   }
 }

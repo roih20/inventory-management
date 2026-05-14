@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PaginatedResult } from '@interfaces/pagination.interface';
 import { Product } from '@interfaces/product.interface';
@@ -11,19 +11,21 @@ export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly API_URL = 'http://localhost:4321/products';
 
-  getAllPaginated(offset?: number): Observable<PaginatedResult<Product>> {
+  distinctProducts = httpResource<Product[]>(() => `${this.API_URL}/distinct`, {
+    defaultValue: [],
+  });
+
+  fetchProducts(offset: number): Observable<PaginatedResult<Product>> {
     let params = new HttpParams();
 
     params = params.set('limit', 10);
 
-    if (offset != undefined) {
-      params = params.set('offset', offset);
-    }
+    params = params.set('offset', offset);
 
     return this.http.get<PaginatedResult<Product>>(this.API_URL, { params });
   }
 
-  getSearchedProducts(product: string): Observable<PaginatedResult<Product>> {
+  searchProduct(product: string, offset?: number): Observable<PaginatedResult<Product>> {
     let params = new HttpParams();
 
     params = params.set('product', product);

@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { Product } from '@interfaces/product.interface';
+import { TableActionsBtn } from '@components/ui/table-actions-btn';
 
 @Component({
   selector: 'products-table',
@@ -13,7 +14,7 @@ import { Product } from '@interfaces/product.interface';
           <th class="px-6 py-5">Category</th>
           <th class="px-6 py-5">Brand</th>
           <th class="px-6 py-5">Price</th>
-          <th class="rounded-tr-xl"></th>
+          <th class="rounded-tr-xl">Actions</th>
         </tr>
       </thead>
       <tbody class="bg-dark-light">
@@ -40,13 +41,15 @@ import { Product } from '@interfaces/product.interface';
               </div>
             </td>
             <td class="px-6 py-5 font-bold text-primary">{{ product.price | currency }}</td>
-            <td class="px-6 py-5"></td>
+            <td class="px-6 py-5">
+              <table-actions-btn></table-actions-btn>
+            </td>
           </tr>
         }
       </tbody>
     </table>
   `,
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, TableActionsBtn],
 })
 export class ProductsTable {
   products = input.required<Product[]>();

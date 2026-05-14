@@ -5,8 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Category } from 'src/categories/entities/category.entity';
-import { SortOptions } from 'src/enums/sortOptions.enum';
-import { OrderOptions } from 'src/enums/orderOptions.enum';
 import { PaginatedResult } from 'src/interfaces/pagination.interface';
 @Injectable()
 export class ProductsService {
@@ -38,19 +36,13 @@ export class ProductsService {
     };
   }
 
-  findAll(
-    categoryId?: number,
-    sort?: SortOptions,
-    order?: OrderOptions,
-  ): Promise<Product[]> {
-    return this.productsService.find({
-      where: { category: { id: categoryId } },
-      order: sort
-        ? {
-            [sort]: order,
-          }
-        : undefined,
-    });
+  findAllDistinct(): Promise<Product[]> {
+    return this.productsService
+      .createQueryBuilder('product')
+      .select(['product.id', 'product.name'])
+      .distinct(true)
+      .orderBy('product.id')
+      .getMany();
   }
 
   async findAllPaginated(

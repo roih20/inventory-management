@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideLogOut,
   LucideLayoutDashboard,
@@ -25,7 +25,9 @@ import {
           <li class="mb-6 lg:mb-4">
             <a
               [routerLink]="link.href"
-              class="bg-dark-light flex lg:gap-x-2 lg:items-center p-4 rounded-2xl lg:hover:bg-dark-light lg:hover:inset-shadow-2xs lg:hover:inset-shadow-dark-thin lg:hover:text-primary-light lg:bg-transparent lg:rounded-xl cursor-pointer"
+              routerLinkActive="bg-dark-light inset-shadow-2xs inset-shadow-dark-thin text-primary-light"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="flex lg:gap-x-2 lg:items-center p-4 rounded-2xl lg:hover:bg-dark-light lg:hover:inset-shadow-2xs lg:hover:inset-shadow-dark-thin lg:hover:text-primary-light lg:rounded-xl cursor-pointer"
             >
               <svg [lucideIcon]="link.icon" class="lg:h-5 lg:w-5"></svg>
               <span class="hidden lg:block">{{ link.title }}</span>
@@ -48,7 +50,7 @@ import {
   host: {
     class: 'bg-dark-regular min-h-dvh rounded-xl px-4 py-8 lg:px-6 xl:w-xs',
   },
-  imports: [LucideLogOut, LucideDynamicIcon, RouterLink],
+  imports: [LucideLogOut, LucideDynamicIcon, RouterLink, RouterLinkActive],
 })
 export class NavPanel {
   readonly links = [

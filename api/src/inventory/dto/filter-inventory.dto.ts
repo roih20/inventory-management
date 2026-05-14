@@ -9,9 +9,4 @@ export class FilterInventoryDto extends PaginationDto {
   @IsEnum(InventoryStatus, { each: true })
   @IsOptional()
   status?: InventoryStatus[];
-
-  @Transform(({ value }) => value.split(','))
-  @IsArray()
-  @IsOptional()
-  location?: string[];
 }

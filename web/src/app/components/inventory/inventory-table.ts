@@ -15,7 +15,7 @@ import { LucideMapPin, LucideAArrowDown } from '@lucide/angular';
           <th class="px-6 py-5">Quantity</th>
           <th class="px-6 py-5">Status</th>
           <th class="px-6 py-5">Location</th>
-          <th class="rounded-tr-xl"></th>
+          <th class="rounded-tr-xl">Actions</th>
         </tr>
       </thead>
       <tbody class="bg-dark-light">

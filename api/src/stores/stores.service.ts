@@ -23,7 +23,14 @@ export class StoresService {
   }
 
   findAll(): Promise<Store[]> {
-    return this.storesRepository.find();
+    return this.storesRepository.find({
+      select: {
+        street: true,
+        city: true,
+        state: true,
+        zipCode: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<Store> {

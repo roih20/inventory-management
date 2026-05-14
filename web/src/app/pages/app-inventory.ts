@@ -21,8 +21,7 @@ import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.inte
       <div class="flex items-center justify-between mt-2 mb-8">
         <div class="flex items-center justify-start gap-x-4 flex-1">
           <search-input (onInputSearch)="onProductSearch($event)"></search-input>
-          <inventory-filter-btn (onFilterChecked)="onSelectedFilter($event)"></inventory-filter-btn>
-          <inventory-sort-btn (onSortSelected)="onSortSelected($event)"></inventory-sort-btn>
+          <inventory-filter-btn (onFilterChecked)="onSelectFilter($event)"></inventory-filter-btn>
         </div>
         <order-stock-btn (openModal)="setModalOpen($event)"></order-stock-btn>
       </div>
@@ -33,8 +32,7 @@ import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.inte
         <inventory-table [inventoryItems]="inventoryItems()"></inventory-table>
         <table-pagination
           [paginationMetadata]="paginationMetadata()"
-          (fetchPreviousPage)="onPrevPage()"
-          (fetchNextPage)="onNextPage()"
+          (changePage)="onPageChange($event)"
         ></table-pagination>
       </div>
     </div>
@@ -45,7 +43,6 @@ import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.inte
   imports: [
     SearchInput,
     InventoryFilterBtn,
-    InventorySortBtn,
     InventoryTable,
     TablePagination,
     OrderStockBtn,
@@ -54,10 +51,10 @@ import { PaginatedResult, PaginationMetadata } from '@interfaces/pagination.inte
 })
 export class Inventory implements OnInit {
   private inventoryService = inject(InventoryService);
-  private readonly PAGE_SIZE = 10;
   inventoryItems = signal<InventoryItem[]>([]);
   isModalOpen = signal<boolean>(false);
-  offset = signal<number>(0);
+  currentOffset = signal<number>(0);
+  filterStatus = signal<string>('');
   paginationMetadata = signal<PaginationMetadata>({
     hasNextPage: false,
     hasPreviousPage: false,
@@ -67,50 +64,47 @@ export class Inventory implements OnInit {
     totalPages: 1,
   });
 
+  constructor() {
+    console.log(this.filterStatus());
+  }
+
   ngOnInit(): void {
-    this.getAllPaginated();
+    this.getInventory();
   }
 
   onProductSearch(product: string | null) {
-    this.offset.set(0);
     if (product) {
       this.searchInventory(product);
     } else {
-      this.getAllPaginated(0);
+      this.getInventory();
     }
   }
 
-  onNextPage() {
-    this.offset.update((value) => value + this.PAGE_SIZE);
-    this.getAllPaginated(this.offset());
+  onSelectFilter(status: string) {
+    this.filterStatus.set(status);
+    this.getInventory();
   }
 
-  onPrevPage() {
-    this.offset.update((value) => value - this.PAGE_SIZE);
-    this.getAllPaginated(this.offset());
-  }
-
-  onSortSelected({ sort, order }: { sort: string; order: 'ASC' | 'DESC' }) {
-    //this.getSortedInventory(sort, order);
-  }
-
-  onSelectedFilter(status: string) {
-    this.getAllPaginated(0, status);
+  onPageChange(currentPage: number) {
+    this.currentOffset.set((currentPage - 1) * 10);
+    this.getInventory();
   }
 
   setModalOpen(isOpen: boolean) {
     this.isModalOpen.set(isOpen);
   }
 
-  private getAllPaginated(offset?: number, status?: string) {
-    this.inventoryService.getAllPaginated(offset, status).subscribe({
-      next: (data) => this.setPaginationResult(data),
+  private getInventory() {
+    this.inventoryService.fetchInventory(this.currentOffset(), this.filterStatus()).subscribe({
+      next: (result) => this.setPaginationResult(result),
+      error: (response) => console.error(response),
     });
   }
 
   private searchInventory(term: string) {
     this.inventoryService.searchInventory(term).subscribe({
       next: (data) => this.setPaginationResult(data),
+      error: (response) => console.error(response),
     });
   }
 
@@ -132,14 +126,6 @@ export class Inventory implements OnInit {
       currentPage,
       numberOfElements,
       totalPages,
-    });
-  }
-
-  private getSortedInventory(sort: string, order: 'ASC' | 'DESC') {
-    this.inventoryService.getSortedInventory(sort, order).subscribe({
-      next: (data) => {
-        this.inventoryItems.set(data);
-      },
     });
   }
 }

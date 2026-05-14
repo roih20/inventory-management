@@ -14,8 +14,6 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { SortOptions } from 'src/enums/sortOptions.enum';
-import { OrderOptions } from 'src/enums/orderOptions.enum';
 import { PaginationDto } from 'src/dtos/pagination.dto';
 import { SearchProductDto } from './dto/search-product.dto';
 
@@ -32,6 +30,11 @@ export class ProductsController {
   @Get()
   findAllPaginated(@Query() query: PaginationDto) {
     return this.productsService.findAllPaginated(query.limit, query.offset);
+  }
+
+  @Get('distinct')
+  findAllDistinct() {
+    return this.productsService.findAllDistinct();
   }
 
   @Get('search')
